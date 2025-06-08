@@ -21,19 +21,14 @@ jobs:
         with:
           node-version: 20
       - name: Install dependencies
-        run: |
-          if [ -f package.json ]; then
-            npm ci
-          fi
+        run: npm ci
       - name: Build site
-        run: |
-          if [ -f package.json ]; then
-            npm run build
-          fi
+        run: npm run build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist'
+          path: "./dist"
+          name: github-pages
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4 
+        uses: actions/deploy-pages@v4
