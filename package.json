@@ -1,0 +1,10 @@
+{
+  "name": "blfunex-pong",
+  "private": true,
+  "dependencies": {
+    "webfontloader": "^1.6.28"
+  },
+  "devDependencies": {
+    "@types/webfontloader": "^1.6.38"
+  }
+}
