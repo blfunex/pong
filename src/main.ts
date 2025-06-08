@@ -190,6 +190,29 @@ class Game {
     ];
   }
 
+  restart() {
+    this.ball.position.x = WIDTH / 2;
+    this.ball.position.y = HEIGHT / 2;
+
+    this.ball.velocity = Vector.randomBallVelocity();
+
+    this.ball.blink_duration = 0;
+
+    this.paddles[0].score = 0;
+    this.paddles[1].score = 0;
+
+    this.paddles[0].velocity.y = 0;
+    this.paddles[1].velocity.y = 0;
+
+    this.paddles[0].position.y = this.paddles[1].position.y =
+      (HEIGHT - 2 * OFFSET - PADDLE_HEIGHT) / 2 + OFFSET;
+
+    this.paddles[0].highlight_duration = PADDLE_HIGHLIGHT_DURATION;
+    this.paddles[1].highlight_duration = PADDLE_HIGHLIGHT_DURATION;
+
+    this.isOver = false;
+  }
+
   update() {
     if (this.isOver) return;
 
@@ -330,19 +353,33 @@ class PlayerPaddle extends Paddle {
     super(game, x, y, width, height);
 
     this.attachEventListeners();
+    this.target = y;
   }
+
+  private target: number;
 
   attachEventListeners() {
     window.addEventListener("mousemove", (event) => {
       if (this.game.isOver) return;
       const rect = canvas.getBoundingClientRect();
       const mouseY = event.clientY - rect.top;
-      this.position.y = clamp(
+      this.target = clamp(
         mouseY - this.height / 2,
         OFFSET,
         HEIGHT - OFFSET - this.height
       );
     });
+
+    window.addEventListener("click", () => {
+      if (!this.game.isOver) return;
+      this.game.restart();
+    });
+  }
+
+  update() {
+    super.update();
+
+    this.position.y = damp(this.position.y, this.target, 5, dt);
   }
 }
 
@@ -458,6 +495,14 @@ function random() {
 
 function randomSign() {
   return random() >= 0.5 ? 1 : -1;
+}
+
+function near(a: number, b: number, epsilon = 1e-6) {
+  if (a === b) return true;
+  return (
+    Math.abs(a - b) <
+    epsilon * clamp(Math.max(Math.abs(a), Math.abs(b), 1), 0, 1)
+  );
 }
 
 const game = new Game();
