@@ -1,4 +1,4 @@
-# PONG
+# [PONG](https://blfunex.github.io/pong/)
 
 A clone of the classic arcade game PONG, built using the HTML5 Canvas API and TypeScript.
 
